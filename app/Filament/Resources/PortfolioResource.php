@@ -13,10 +13,15 @@ use Filament\Forms\Components\Repeater;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 
 class PortfolioResource extends Resource
 {
     protected static ?string $model = Portfolio::class;
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Form $form): Form
     {
@@ -29,7 +34,7 @@ class PortfolioResource extends Resource
                 ->image()
                 ->label('Main Image')
                 ->required(),
-            // Updated gallery section: Repeater with image and description per image
+            // Gallery section: Repeater with image and description per image
             Repeater::make('gallery')
                 ->label('Gallery')
                 ->schema([
@@ -62,6 +67,15 @@ class PortfolioResource extends Resource
                 TextColumn::make('url')
                     ->label('Project URL')
                     ->url(fn ($record) => $record->url, true),
+            ])
+            ->actions([
+                EditAction::make(),
+                DeleteAction::make(), // 👈 Add this line for delete button
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(), // 👈 Optional: bulk delete
+                ]),
             ]);
     }
 
